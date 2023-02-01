@@ -10,7 +10,7 @@ def main():
     lock = threading.Lock()
 
    # spawn the threads
-    t = threading.Thread(target=score_HTTP, args=(shared_queue, alive, lock))
+    t = threading.Thread(target=score_HTTP, args=(shared_queue, alive, lock, 'http://google.com'))
     t.start()
 
     # main loop
