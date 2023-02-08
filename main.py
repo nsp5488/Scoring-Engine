@@ -3,6 +3,7 @@ from http_score import score_HTTP
 from smtp_score import score_SMTP
 from icmp_score import score_ICMP
 from dns_score import score_DNS
+import requests
 import threading
 
 shared_queue = Queue()
@@ -25,7 +26,9 @@ def main():
     # main loop
     try:
         while(True):
-            print(shared_queue.get())
+            content = shared_queue.get()
+            print(content)
+            requests.post('http://localhost:5000/update_scores', content)
     except KeyboardInterrupt:
         print('exiting')
 
