@@ -4,7 +4,7 @@ DPORT = 587
 
 def score_SMTP(queue, alive, lock, target, target_port=DPORT):
     mail_server = SMTP()
-    while alive:
+    while alive():
 
         try:
             conn = mail_server.connect(host=target, port=target_port)
