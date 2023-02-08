@@ -1,22 +1,21 @@
 import paramiko
 from time import sleep
 
-ssh_hostname = 'localhost'
-ssh_port = 22
-ssh_username = 'username'
-ssh_password = 'password'
+port = 22
+username = 'username'
+password = 'password'
 
-def score_SSH(queue, alive, lock):
-    while alive:
+def score_SSH(queue, alive, lock, target):
+    while alive():
         try:
             s = paramiko.SSHClient()
             s.load_system_host_keys()
 
-            s.connect(ssh_hostname, ssh_port, ssh_username, ssh_password, timeout=5)
+            s.connect(ssh_hostname, port, username, password, timeout=5)
             
             # SSH Server connects sucessfully 
             lock.aquire()
-            queue.put({'service': 'ssh', 'status': 'UP'})
+            queue.put({'service': 'ssh', 'status': 'UP', 'host':target})
             lock.release()
 
         # SSH Server failed to login
@@ -26,6 +25,6 @@ def score_SSH(queue, alive, lock):
         # SSH Server failed to respond
         except:
             lock.acquire()
-            queue.put({'service': 'ssh', 'status': 'DOWN'})
+            queue.put({'service': 'ssh', 'status': 'DOWN', 'host':target})
             lock.release()
         sleep(60)
