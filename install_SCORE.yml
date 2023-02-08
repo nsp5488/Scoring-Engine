@@ -1,0 +1,34 @@
+---
+- hosts: localhost
+  tasks:
+    - name: install the python3 package as well as git and npm
+      apt:
+        name: 
+          - python3
+          - git
+          - npm
+        state: latest
+        update_cache: yes
+
+    - name: install pip
+      apt:
+        name: python3-pip
+        state: latest
+
+    - name: install packages for score stack
+      pip:
+        name: 
+          - paramiko
+          - requests
+          - impacket
+          - icmplib
+          - flask
+          - smbprotocol
+          - flask-cors
+          - dnspython
+          - pyodbc
+    - name: get the code from our github repo
+      git:
+        repo: https://github.com/Jpk7948/CSEC473-TeamBravo.git
+        dest: ./score
+        clone: yes    

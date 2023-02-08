@@ -11,6 +11,7 @@ import requests
 import threading
 
 shared_queue = Queue()
+flaskServAddr = 'http://localhost:5000/update_scores'
 
 
 def main():
@@ -39,12 +40,14 @@ def main():
     try:
         while(True):
             content = shared_queue.get()
-            print(content)
-            requests.post('http://localhost:5000/update_scores', content)
-    except KeyboardInterrupt:
-        print('exiting')
+            print(f"Posting {content} to {flaskServAddr}")
+            res = requests.post(flaskServAddr, content)
+            print(f"Received response: {res} from {flaskServAddr}")
 
+    except KeyboardInterrupt:
+        print('Attempting to exit gracefully.')
     alive_bool = False
+
     t1.join()
     t2.join()
     t3.join()
@@ -53,6 +56,8 @@ def main():
     t6.join()
     t7.join()
     t8.join()
+
+    print("All threads shutdown successfully!")
 
 
 if __name__ == '__main__':
