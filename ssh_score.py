@@ -11,7 +11,7 @@ def score_SSH(queue, alive, lock, target):
             s = paramiko.SSHClient()
             s.load_system_host_keys()
 
-            s.connect(ssh_hostname, port, username, password, timeout=5)
+            s.connect(target, port, username, password, timeout=5)
             
             # SSH Server connects sucessfully 
             lock.aquire()
