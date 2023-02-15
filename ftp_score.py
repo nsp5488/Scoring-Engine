@@ -1,10 +1,10 @@
 from ftplib import FTP
 from time import sleep
 
-username = 'username'
-password = 'password'
+DUSERNAME = 'username'
+DPASSWORD = 'password'
 
-def score_FTP(queue, alive, lock, target):
+def score_FTP(queue, alive, lock, target, value, username=DUSERNAME, password=DPASSWORD):
     while alive():
         try:
             ftp = FTP(target, username, password, timeout=5)
@@ -13,12 +13,12 @@ def score_FTP(queue, alive, lock, target):
             
             # FTP Server connects sucessfully 
             lock.aquire()
-            queue.put({'service': 'ftp', 'status': 'UP', 'host':target})
+            queue.put({'service': 'ftp', 'status': 'UP', 'host':target, 'value':value})
             lock.release()
 
         # FTP Server failed to respond
         except:
             lock.acquire()
-            queue.put({'service': 'ftp', 'status': 'DOWN', 'host':target})
+            queue.put({'service': 'ftp', 'status': 'DOWN', 'host':target, 'value':value})
             lock.release()
         sleep(60)

@@ -1,10 +1,9 @@
 import pyodbc
 from time import sleep
 
-server = 'servername'
-database = 'database'
+DDATABASE='localhost'
 
-def score_SQL(queue, alive, lock):
+def score_SQL(queue, alive, lock, server, value, database=DDATABASE):
     while alive():
         try:
             pyodbc.connect('Driver{SQL Server};'
@@ -15,12 +14,12 @@ def score_SQL(queue, alive, lock):
             
             # SQL Server connects sucessfully 
             lock.aquire()
-            queue.put({'service': 'sql', 'status': 'UP', 'host':server})
+            queue.put({'service': 'sql', 'status': 'UP', 'host':server, 'value':value})
             lock.release()
 
         # SQL Server failed to respond
         except:
             lock.acquire()
-            queue.put({'service': 'sql', 'status': 'DOWN', 'host':server})
+            queue.put({'service': 'sql', 'status': 'DOWN', 'host':server, 'value':value})
             lock.release()
         sleep(60)
