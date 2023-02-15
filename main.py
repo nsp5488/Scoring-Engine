@@ -51,11 +51,11 @@ def spawn_threads():
         elif protocol == 'RDP':
             target = score_RDP
         elif protocol == 'AD':
-            pass
+            target = score_AD
         elif protocol == 'RocketChat':
             target = score_rocket_chat
         elif protocol == 'Nextcloud':
-            pass
+            target = score_NextCloud
         else:
             print("Undefined protocol in input")
             exit(-1)

@@ -1,7 +1,7 @@
 from pyad import *
 from time import sleep
 
-def score_AD(queue, alive, lock, servername, username, password):
+def score_AD(queue, alive, lock, servername, username='User', password='Pass'):
     pyad.set_defaults(ldap_server=servername, username=username, password=password)
     while alive():
         try:
