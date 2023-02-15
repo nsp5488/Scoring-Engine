@@ -9,6 +9,8 @@ from smtp_score import score_SMTP
 from icmp_score import score_ICMP
 from dns_score import score_DNS
 from smb_score import score_SMB
+from ad_score import score_AD
+from nextcloud_score import score_NextCloud
 from rocket_chat_score import score_rocket_chat
 from rdp_score import score_RDP
 import requests
@@ -87,6 +89,10 @@ def main():
     t7.start()
     t8 = threading.Thread(target=score_SMB, args=(shared_queue, alive, lock, 'localhost', value))
     t8.start()
+    t9 = threading.Thread(target=score_AD, args=(shared_queue, alive, lock, 'domainname.com', 'username', 'password'))
+    t9.start()
+    t10 = threading.Thread(target=score_NextCloud, args=(shared_queue, alive, lock, 'http://url:80', 'username', 'password'))
+    t10.start()
 
     # main loop
     try:
@@ -122,6 +128,8 @@ def main():
     t6.join()
     t7.join()
     t8.join()
+    t9.join()
+    t10.join()
 
     # for thread in threads:
     #     thread.join()
