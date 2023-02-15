@@ -52,12 +52,12 @@ export default {
     },
     template: `
     <div class="scoring">
-    <p style="text-align:left; padding-left:20px">
+    <h1 style="text-align:left; padding-left:20px; color:white;">
     {{blueScore}}
         <span style="float:right; padding-right:20px"> {{redScore}} </span>
  
-    </p> 
-    <div class="scoreBar" id="score" :style={background:}></div>
+    </h1> 
+    <div class="scoreBar" id="score" ></div>
     </div>
 
     <div v-for="host, key in services">

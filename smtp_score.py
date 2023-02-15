@@ -2,7 +2,7 @@ from smtplib import SMTP
 from time import sleep
 DPORT = 587
 
-def score_SMTP(queue, alive, lock, target, target_port=DPORT):
+def score_SMTP(queue, alive, lock, target, value, target_port=DPORT):
     mail_server = SMTP()
     while alive():
 
@@ -12,11 +12,11 @@ def score_SMTP(queue, alive, lock, target, target_port=DPORT):
             
             # if we got this far, the server properly responded
             lock.acquire()
-            queue.put({'service': 'smtp', 'status': 'UP', 'host' : target})
+            queue.put({'service': 'smtp', 'status': 'UP', 'host' : target, 'value':value})
             lock.release()
         except Exception: # If any exception is thrown, it's the result of the server being down or misconfigured
             lock.acquire()
-            queue.put({'service': 'smtp', 'status': 'DOWN', 'host' : target})
+            queue.put({'service': 'smtp', 'status': 'DOWN', 'host' : target, 'value':value})
             lock.release()
         
         sleep(60)

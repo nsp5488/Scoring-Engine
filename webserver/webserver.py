@@ -19,11 +19,12 @@ def display_services():
 @app.route("/update_scores", methods=['POST'])
 def update_services():
     try:
-        print(f"Received {request} FROM {request.host}")
+        print(f"Received {request} FROM {request.host}\n\n")
 
         host = request.form['host']
         service = request.form['service']
         status = request.form['status']
+        score = request.form['value']
 
         if host in services.keys():
             if service in services[host].keys():
