@@ -9,6 +9,8 @@ from smtp_score import score_SMTP
 from icmp_score import score_ICMP
 from dns_score import score_DNS
 from smb_score import score_SMB
+from rocket_chat_score import score_rocket_chat
+from rdp_score import score_RDP
 import requests
 import threading
 
@@ -44,6 +46,14 @@ def spawn_threads():
             target = score_FTP
         elif protocol == 'SMB':
             target = score_SMB
+        elif protocol == 'RDP':
+            target = score_RDP
+        elif protocol == 'AD':
+            pass
+        elif protocol == 'RocketChat':
+            target = score_rocket_chat
+        elif protocol == 'Nextcloud':
+            pass
         else:
             print("Undefined protocol in input")
             exit(-1)
