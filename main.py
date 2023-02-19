@@ -104,9 +104,10 @@ def main():
 
 
             try:
-                print(f"Posting {content} to {flaskServAddr}\n")
-                res = requests.post(flaskServAddr, content)
-                print(f"Received response: {res} from {flaskServAddr}\n\n")
+                pass
+                # print(f"Posting {content} to {flaskServAddr}\n")
+                # res = requests.post(flaskServAddr, content)
+                # print(f"Received response: {res} from {flaskServAddr}\n\n")
 
             except requests.exceptions.ConnectionError:
                 print("Error while connecting to the webserver!", file=sys.stderr)
