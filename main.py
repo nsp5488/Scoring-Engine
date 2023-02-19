@@ -72,32 +72,10 @@ def spawn_threads(alive):
 def main():
     alive_bool = True
     alive = lambda : alive_bool
-
+    threads = spawn_threads(alive)
     # spawn the threads
-    # for thread in spawn_threads(alive): # uncomment once we have the CSV of hosts
-    #     thread.start()
-
-    value = 1
-    t1 = threading.Thread(target=score_HTTP, args=(shared_queue, alive, lock, 'http://google.com', value))
-    t1.start()
-    t2 = threading.Thread(target=score_SMTP, args=(shared_queue, alive, lock, 'mail.rit.edu', value))
-    t2.start()
-    t3 = threading.Thread(target=score_ICMP, args=(shared_queue, alive, lock, 'localhost', value))
-    t3.start()
-    t4 = threading.Thread(target=score_DNS, args=(shared_queue, alive, lock, '8.8.8.8', value))
-    t4.start()
-    t5 = threading.Thread(target=score_SSH, args=(shared_queue, alive, lock, 'glados.cs.rit.edu', value))
-    t5.start()
-    t6 = threading.Thread(target=score_SQL, args=(shared_queue, alive, lock, 'localhost', value))
-    t6.start()
-    t7 = threading.Thread(target=score_FTP, args=(shared_queue, alive, lock, 'localhost', value))
-    t7.start()
-    t8 = threading.Thread(target=score_SMB, args=(shared_queue, alive, lock, 'localhost', value))
-    t8.start()
-    t9 = threading.Thread(target=score_AD, args=(shared_queue, alive, lock, 'domainname.com', 'username', 'password'))
-    t9.start()
-    t10 = threading.Thread(target=score_NextCloud, args=(shared_queue, alive, lock, 'http://url:80', value, 'username', 'password'))
-    t10.start()
+    for thread in threads:
+        thread.start()
 
     # main loop
     try:
@@ -137,19 +115,9 @@ def main():
         print('\n\nAttempting to exit gracefully....')
     alive_bool = False
 
-    t1.join()
-    t2.join()
-    t3.join()
-    t4.join()
-    t5.join()
-    t6.join()
-    t7.join()
-    t8.join()
-    t9.join()
-    t10.join()
 
-    # for thread in threads:
-    #     thread.join()
+    for thread in threads:
+        thread.join()
 
     print("All threads shutdown successfully!")
     print("Writing score state: ")
