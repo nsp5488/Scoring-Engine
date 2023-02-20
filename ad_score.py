@@ -1,7 +1,7 @@
 import pyads
 from time import sleep
 
-def score_AD(queue, alive, lock, servername, value):
+def score_AD(queue, alive, lock, servername,port, value=1):
     plc = None
     while alive():
         try:

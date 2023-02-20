@@ -28,12 +28,11 @@ def spawn_threads(alive):
 
     df = pd.read_csv(host_list)
     threads = []
-    for row in df:
+    for idx, row in df.iterrows():
         protocol = row['Service']
         host = row['Host (IP)']
         port = row['Port (Leave blank for default)']
-        value = row['Value']
-
+        value = int(row['Value'])
         # because python hates me and added match statements in 3.10
         if protocol == 'HTTP':
             target = score_HTTP
@@ -66,7 +65,7 @@ def spawn_threads(alive):
             exit(-1)
 
         t = threading.Thread(target=target, args=(shared_queue, alive, lock, host, port, value))
-        threads.add(t)
+        threads.append(t)
     return threads
 
 def main():
@@ -95,7 +94,7 @@ def main():
 
         while(True):
             content = shared_queue.get()
-
+            print(content)
             if content['status'] == 'UP':  # Change these to talk to the database
                 blue_score += int(content['value'])
             else:

@@ -3,7 +3,7 @@ import socket
 
 PORT = 3389
 
-def score_RDP(queue, alive, lock, server, value):
+def score_RDP(queue, alive, lock, server, port=PORT, value=1):
     while alive():
         try:
             s = socket.socket((server, PORT))
