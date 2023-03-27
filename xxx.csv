@@ -1,4 +1,0 @@
-Host (IP),Service,Port (Leave blank for default),Value,subdomain,"(append "".betahospital.com"" to get FQDN)"
-192.168.0.2,SMTP,25,1,,
-192.168.0.2,SSH,22,1,,
-192.168.0.2,RDP,,1,,

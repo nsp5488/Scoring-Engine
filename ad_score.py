@@ -1,14 +1,15 @@
-import pyads
+import ldap
 from time import sleep
 
 def score_AD(queue, alive, lock, servername,port, value=1):
-    plc = None
     while alive():
         try:
-            plc = pyads.Connection(servername)
-            plc.open()
+            l = ldap.initialize('ldap://192.168.2.3')
+            l.simple_bind_s()
+
+            l.search('(&(objectCategory=person)(objectClass=user))', ldap.SCOPE_SUBTREE)
             lock.acquire()
-            queue.put({'service': 'Active Direcctory', 'status': 'DOWN', 'host' : servername, 'value': value})
+            queue.put({'service': 'Active Directory', 'status': 'UP', 'host' : servername, 'value': value})
             lock.release()
 
         except Exception:
@@ -16,4 +17,3 @@ def score_AD(queue, alive, lock, servername,port, value=1):
             queue.put({'service': 'Active Directory', 'status': 'DOWN', 'host' : servername, 'value': value})
             lock.release()
         sleep(60)
-    plc.close()

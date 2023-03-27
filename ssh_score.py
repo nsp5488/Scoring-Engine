@@ -23,7 +23,6 @@ def score_SSH(queue, alive, lock, target, port=DPORT, value=1, username=DUSERNAM
 
         # SSH Server failed to respond
         except:
-            print('connection error')
             lock.acquire()
             queue.put({'service': 'ssh', 'status': 'DOWN', 'host':target, 'value':value})
             lock.release()
