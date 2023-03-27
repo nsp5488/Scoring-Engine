@@ -1,17 +1,16 @@
 import paramiko
 from time import sleep
 
-DPORT = 22
+DPORT = '22'
 DUSERNAME = 'root'
 DPASSWORD = 'password'
 
-def score_SSH(queue, alive, lock, target, value, port=DPORT, username=DUSERNAME, password=DPASSWORD):
+def score_SSH(queue, alive, lock, target, port=DPORT, value=1, username=DUSERNAME, password=DPASSWORD):
     while alive():
         try:
             s = paramiko.SSHClient()
-            s.load_system_host_keys()
-
-            s.connect(target, port, username, password, timeout=5)
+            s.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+            s.connect(target, int(port), username, password)
             
             # SSH Server connects sucessfully 
             lock.aquire()
@@ -19,13 +18,11 @@ def score_SSH(queue, alive, lock, target, value, port=DPORT, username=DUSERNAME,
             lock.release()
 
         # SSH Server failed to login
-        except paramiko.AuthenticationException:
-            # print("SSH credentials bad") # Commented out because this still allows us to check that the service is up
+        except paramiko.ssh_exception.AuthenticationException:
             queue.put({'service': 'ssh', 'status': 'UP', 'host':target, 'value': value})
 
         # SSH Server failed to respond
         except:
-            print('connection error')
             lock.acquire()
             queue.put({'service': 'ssh', 'status': 'DOWN', 'host':target, 'value':value})
             lock.release()

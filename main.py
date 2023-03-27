@@ -18,8 +18,8 @@ import requests
 import threading
 
 shared_queue = Queue()
-flaskServAddr = 'http://localhost:5000/update_scores'
-host_list = 'xxx.csv'
+flaskServAddr = 'http://127.0.0.1:5000'
+host_list = 'services.csv'
 SCORE_FILE = 'scores.txt'
 lock = threading.Lock()
 
@@ -28,12 +28,11 @@ def spawn_threads(alive):
 
     df = pd.read_csv(host_list)
     threads = []
-    for row in df:
+    for idx, row in df.iterrows():
         protocol = row['Service']
         host = row['Host (IP)']
         port = row['Port (Leave blank for default)']
-        value = row['Value']
-
+        value = int(row['Value'])
         # because python hates me and added match statements in 3.10
         if protocol == 'HTTP':
             target = score_HTTP
@@ -57,7 +56,7 @@ def spawn_threads(alive):
             target = score_AD
         elif protocol == 'RocketChat':
             target = score_rocket_chat
-        elif protocol == 'Nextcloud':
+        elif protocol == 'NextCloud':
             target = score_NextCloud
         elif protocol == 'IMAP':
             target = score_IMAP
@@ -66,7 +65,7 @@ def spawn_threads(alive):
             exit(-1)
 
         t = threading.Thread(target=target, args=(shared_queue, alive, lock, host, port, value))
-        threads.add(t)
+        threads.append(t)
     return threads
 
 def main():
@@ -95,20 +94,23 @@ def main():
 
         while(True):
             content = shared_queue.get()
+            print(content)
 
-            if content['status'] == 'UP':  # Change these to talk to the database
+            if content['status'] == 'UP':
                 blue_score += int(content['value'])
             else:
                 red_score += int(content['value'])
+            
             print(f"Blue score: {blue_score}\n Red Score: {red_score}\n\n")
 
 
             try:
-                pass
-                # print(f"Posting {content} to {flaskServAddr}\n")
-                # res = requests.post(flaskServAddr, content)
-                # print(f"Received response: {res} from {flaskServAddr}\n\n")
-
+                print(f"Posting {content} to {flaskServAddr}\n")
+                res = requests.post(flaskServAddr + '/update_services', content)
+                print(f"Received response: {res} from {flaskServAddr}\n\n")
+                print(f"Posting current scores to {flaskServAddr}\n")
+                res = requests.post(flaskServAddr + '/update_scores', {'blue_score' : blue_score, 'red_score' : red_score})
+                print(f"Received response: {res} from {flaskServAddr}\n\n")
             except requests.exceptions.ConnectionError:
                 print("Error while connecting to the webserver!", file=sys.stderr)
 

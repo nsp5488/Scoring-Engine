@@ -2,9 +2,8 @@ export default {
     data() {
       return {
         services: {},
-        redScore: 40,
-        blueScore: 60,
-        totalScore: this.blueScore + this.redScore
+        redScore: 0,
+        blueScore: 0,
       }
     },
     created() {
@@ -16,66 +15,50 @@ export default {
         async getData() {
             console.log("Fetching");
             let response = await fetch("http://127.0.0.1:5000/display_scores");
-            this.services = await response.json();
-            let totalScore = this.blueScore + this.redScore;
-
-            document.getElementById('score').style.background=`linear-gradient(to right, blue ${this.blueScore / totalScore}, red ${this.redScore / totalScore})`
-        },
+	    let body = await response.json();
+	    this.services = body.services;
+	    this.blueScore = body.scores.blue_score;
+  	    this.redScore = body.scores.red_score;
+	    this.rows = [];
+	    for(let ip in this.services) {
+		let host = this.services[ip]
+		for(let service in host) {
+		    let status = host[service]
+		    console.log(host);
+	       	    this.rows.push({'ip': ip, 'service': service, 'status': status})
+		}
+	    }
+	},
         cancelUpdates() {
             clearInterval(this.timer);
         },
-        updateScore1(){
-            this.blueScore += 5;
-            let totalScore = this.blueScore + this.redScore;
-            document.getElementById('score').style.background=`linear-gradient(to right, blue ${this.blueScore / totalScore}, red ${this.redScore / totalScore})`
-
-            // let bar = document.getElementById('score');
-            // bar.style.background=`linear-gradient(to right, blue ${this.blueScore / totalScore}, red ${this.redScore / totalScore} )`
-        },
-        updateScore2() {
-            this.redScore += 5;
-            let totalScore = this.blueScore + this.redScore;
-
-            let bar = document.getElementById('score');
-            console.log(bar);
-            bar.style.background=`linear-gradient(to right, blue ${this.blueScore / totalScore}, red ${this.redScore / totalScore} )`
-        }
-    },
-    computed: {
-        createBackgroundString() {
-            console.log(`linear-gradient(to right, blue ${this.blueScore}, red ${this.redScore})`);
-            return `linear-gradient(to right, blue ${this.blueScore}, red ${this.redScore})`;
-        }
     },
     beforeUnmount() {
         this.cancelUpdates();
     },
     template: `
     <div class="scoring">
-    <h1 style="text-align:left; padding-left:20px; color:white;">
-    {{blueScore}}
-        <span style="float:right; padding-right:20px"> {{redScore}} </span>
- 
-    </h1> 
-    <div class="scoreBar" id="score" ></div>
+        <h1 style="text-align:left; padding-left:20px; color:white;">
+            Blue Score: {{blueScore}}
+            <span style="float:right; padding-right:20px"> Red Score: {{redScore}} </span>
+        </h1> 
     </div>
-
-    <div v-for="host, key in services">
-    {{key}}
+    <div class='scoreTable'>
         <table>
-        <tr>
-            <th> Service </th>
-            <th> Status </th>
-        </tr>
-        <tr v-for="status, service in host">
-            <td> {{service}} </td> 
-            <td> {{status}}  </td>
-        </tr>
+	    <tr>
+	        <th> IP </th>
+	        <th> Service </th>
+	        <th> Status </th>
+	    </tr>
+
+	    <tr v-for="row in rows">
+	        <td> {{row.ip}} </td>
+	        <td> {{row.service}} </td>
+	        <td v-if='row.status=="UP"'> <span class='dotUp'></span>  </td>
+	        <td v-else> <span class='dotDown'></span>  </td>
+	     </tr>
         </table>
-        <br/>
     </div>
-    <button @click="updateScore1"> click me!</button>
-    <button @click="updateScore2"> click me2!</button>
     `
   }
 
