@@ -13,11 +13,7 @@ def landing_page():
 
 @app.route("/display_scores", methods=['GET'])
 def display_services():
-    print(f"Received {request} from front-end")
-    print("building response. . .")
     content = {'services': services, 'scores' : scores}
-    print(scores)
-    print("Returning response")
     return content
 
 
@@ -27,11 +23,12 @@ def update_scores():
         print(f"receives {request} FROM {request.host}\n\n")
         blue_score = request.form['blue_score']
         red_score = request.form['red_score']
-        print(blue_score)
-        print(red_score)
         scores['blue_score'] = str(blue_score)
         scores['red_score'] = str(red_score)
+        for key in services.keys():
+            print(services[key])
         print(scores)
+        
         return {"Success":True}
     except Exception:
         return {"Success":False}

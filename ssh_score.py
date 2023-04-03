@@ -14,17 +14,17 @@ def score_SSH(queue, alive, lock, target, port=DPORT, value=1, username=DUSERNAM
             
             # SSH Server connects sucessfully 
             lock.aquire()
-            queue.put({'service': 'ssh', 'status': 'UP', 'host':target, 'value': value})
+            queue.put({'service': 'SSH', 'status': 'UP', 'host':target, 'value': value})
             lock.release()
 
         # SSH Server failed to login
         except paramiko.ssh_exception.AuthenticationException:
-            queue.put({'service': 'ssh', 'status': 'UP', 'host':target, 'value': value})
+            queue.put({'service': 'SSH', 'status': 'UP', 'host':target, 'value': value})
 
         # SSH Server failed to respond
         except:
             lock.acquire()
-            queue.put({'service': 'ssh', 'status': 'DOWN', 'host':target, 'value':value})
+            queue.put({'service': 'SSH', 'status': 'DOWN', 'host':target, 'value':value})
             lock.release()
             
         sleep(60)

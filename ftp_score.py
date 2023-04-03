@@ -1,4 +1,4 @@
-from ftplib import FTP
+from ftplib import FTP, error_perm
 from time import sleep
 
 DUSERNAME = 'username'
@@ -17,7 +17,8 @@ def score_FTP(queue, alive, lock, target,port=DPORT, value=1, username=DUSERNAME
             lock.acquire()
             queue.put({'service': 'FTP', 'status': 'UP', 'host':target, 'value':value})
             lock.release()
-
+        except error_perm:
+            queue.put({'service': 'FTP', 'status': 'UP', 'host':target, 'value':value})
         # FTP Server failed to respond
         except:
             lock.acquire()

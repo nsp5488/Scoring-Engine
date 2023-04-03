@@ -7,3 +7,7 @@ Host (IP),Service,Port (Leave blank for default),Value
 192.168.2.6,FTP,21,1
 192.168.2.7,NextCloud,80,1
 192.168.2.8,RocketChat,80,1
+192.168.4.2,SSH,22,1
+192.168.4.3,SSH,22,1
+192.168.4.4,SSH,22,1
+192.168.4.5,SSH,22,1

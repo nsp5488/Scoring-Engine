@@ -24,6 +24,11 @@ def score_HTTP(queue, alive, lock, target, port, value):
             lock.acquire()
             queue.put({'service': 'HTTP', 'status': 'DOWN', 'host':target, 'value':value})
             lock.release()
+        except:
+            lock.acquire()
+            queue.put({'service': 'HTTP', 'status': 'DOWN', 'host':target, 'value':value})
+            lock.release()
+        
         sleep(60)
 
 
