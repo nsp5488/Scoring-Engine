@@ -54,3 +54,4 @@ def update_services():
         return {'Success': True}
     except Exception:
         return {'Success' : False}
+
